@@ -13,6 +13,10 @@ navbarPage("Stand Density Management Diagram",
     
     fluidRow(
       column(3, wellPanel(
+        selectInput(inputId="type",label="Select Diagram",
+                    choices = c("Reineke" =1, 
+                                "Gingrich" =2),
+                    selected = 1),
         selectInput(inputId="ineq",label="Select species and reference",
              choices = c("User Defined" =1, 
                          "ponderosa pine:	Long and Shaw (2005)" =2,
@@ -31,7 +35,7 @@ navbarPage("Stand Density Management Diagram",
 
       
         conditionalPanel(
-          condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+          condition = "(input.type==1&!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8))",
           selectInput(inputId="invol",label="Overlay the volume iso-lines?",
               choices = c("No"=FALSE,"Yes"=TRUE),
               selected = FALSE)),
@@ -81,8 +85,8 @@ navbarPage("Stand Density Management Diagram",
       )),
 
         
-  column(3, wellPanel(
-        
+  column(3, conditionalPanel(
+          condition = "input.type == 1",
           splitLayout(
             numericInput("tpa1", "TPA/TPH", NULL),
             numericInput("qmd1", "QMD", NULL)),
@@ -106,30 +110,62 @@ navbarPage("Stand Density Management Diagram",
             numericInput("qmd7", "QMD", NULL)),
           splitLayout(
             numericInput("tpa8", "TPA/TPH", NULL),
-            numericInput("qmd8", "QMD", NULL)),
-          
+            numericInput("qmd8", "QMD", NULL))),
+        
+         conditionalPanel(
+           condition = "input.type == 2",
+           splitLayout(
+             numericInput("tpa1_g", "TPA/TPH", NULL),
+             numericInput("ba1", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa2_g", "TPA/TPH", NULL),
+             numericInput("ba2", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa3_g", "TPA/TPH", NULL),
+             numericInput("ba3", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa4_g", "TPA/TPH", NULL),
+             numericInput("ba4", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa5_g", "TPA/TPH", NULL),
+             numericInput("ba5", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa6_g", "TPA/TPH", NULL),
+             numericInput("ba6", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa7_g", "TPA/TPH", NULL),
+             numericInput("ba7", "Basal Area", NULL)),
+           splitLayout(
+             numericInput("tpa8_g", "TPA/TPH", NULL),
+             numericInput("ba8", "Basal Area", NULL))),  
+
   
         conditionalPanel(
-          condition = "!(input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+          condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
           helpText("Predict stand attributes. Click the Calculate button to update"),
           actionButton("calc", "Calculate")),
         
         conditionalPanel(
-          condition = "(input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+          condition = "(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
           helpText("Stand attribute prediction is not available"))
-    )),
+    ),
   
   
-  column(3, mainPanel(      
-        plotOutput("dmdview",width = "500px", height="800px"),
+  column(6, mainPanel(
+        plotOutput("dmdview", height="800px")
+    ))
 
-        
-        conditionalPanel(
-          condition = "!(input.ineq == 4|input.ineq == 5|input.ineq == 8)",
-          verbatimTextOutput("Est_vol")
-        
-        )
-    )
+
+  
+  ),
+  
+  fluidRow(
+      column(12, conditionalPanel(
+      condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+      verbatimTextOutput("Est_vol")
+      
+  )
+  
   ))),
  
  tabPanel("Export",
@@ -146,7 +182,7 @@ navbarPage("Stand Density Management Diagram",
             hr(),
             
             conditionalPanel(
-                condition = "!(input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+                condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
                 
             
             h5("Export Stand Attribute Table"),

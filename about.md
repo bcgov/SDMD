@@ -4,7 +4,7 @@ This application depicts stand density management diagrams (SDMDs) of ponderosa 
 
 ## Description
 
-Users can draw different SDMDs by reference as well as create a new one (i.e., User Defiend option), modifying maximum SDI, management zone, Reineke's term for self-thinning line, etc. Users can also download the plot and table into their computers from the Export Tab. 
+Users can draw different SDMDs by reference as well as create their own (i.e., User Defiend option), modifying maximum SDI, management zone, Reineke's term for self-thinning line, etc. Users can also download the plot and table into their computers from the Export Tab. 
 
 ## Built with
 * R/Rstudio/`Shiny`

@@ -11,8 +11,10 @@ function(input, output) {
 p1<-function(){
   x_cord<-c(input$tpa1,input$tpa2,input$tpa3,input$tpa4,input$tpa5,input$tpa6,input$tpa7,input$tpa8)
   y_cord<-c(input$qmd1,input$qmd2,input$qmd3,input$qmd4,input$qmd5,input$qmd6,input$qmd7,input$qmd8)
+  x_cord_g<-c(input$tpa1_g,input$tpa2_g,input$tpa3_g,input$tpa4_g,input$tpa5_g,input$tpa6_g,input$tpa7_g,input$tpa8_g)
+  y_cord_g<-c(input$ba1,input$ba2,input$ba3,input$ba4,input$ba5,input$ba6,input$ba7,input$ba8)
   s <- 1:7
-  
+  if (input$type==1){
   dmd.view(ineq         = input$ineq,
                           inul         = TRUE,
                           insdi        = TRUE,
@@ -32,10 +34,35 @@ p1<-function(){
                           vcol         = "blue",
                           use.metric   = as.logical(input$use.metric)
   )
-  
+  } else {
+    gdmd.view(ineq     = input$ineq,
+                        inul         = TRUE,
+                        inrd         = TRUE,
+                        rdlabel      = TRUE,
+                        inply        = TRUE,
+                        inqmd        = TRUE,
+                        inspace      = TRUE,
+                        max.sdi      = ifelse(input$ineq==1,input$max.sdi1,ifelse(input$ineq==6,input$max.sdi6,
+                                                                                  ifelse(input$ineq==7,input$max.sdi7,NA))),
+                        umz          = NA,
+                        lmz          = NA,
+                        mgt.zone     = if (input$ineq==1) input$mgt.zone1 else if (input$ineq==6) input$mgt.zone6 else c(0.35,0.60),
+                        reineke.term = ifelse(input$ineq==1,input$reineke.term,1.6),
+                        bsi          = ifelse(is.na(input$bsi),90,input$bsi),
+                        dcol         = "blue",
+                        rdcol        = "black",
+                        mzcol        = "lightgrey",
+                        dmd.title    = " ",
+                        use.metric   = as.logical(input$use.metric))  
+    
+  }
+  if (input$type==1){ 
     points(x_cord,y_cord,pch=19,cex=1.3)
     segments(x_cord[s],y_cord[s], x_cord[s+1], y_cord[s+1], lwd=1.3)
-  
+  } else {
+    points(x_cord_g,y_cord_g,pch=19,cex=1.3)
+    segments(x_cord_g[s],y_cord_g[s], x_cord_g[s+1], y_cord_g[s+1], lwd=1.3)   
+  }
 }
 
 tpa1<-eventReactive(input$calc,as.numeric(input$tpa1))
@@ -55,136 +82,42 @@ qmd7<-eventReactive(input$calc,as.numeric(input$qmd7))
 tpa8<-eventReactive(input$calc,as.numeric(input$tpa8))
 qmd8<-eventReactive(input$calc,as.numeric(input$qmd8))
 
+tpa1_g<-eventReactive(input$calc,as.numeric(input$tpa1_g))
+ba1<-eventReactive(input$calc,as.numeric(input$ba1))
+tpa2_g<-eventReactive(input$calc,as.numeric(input$tpa2_g))
+ba2<-eventReactive(input$calc,as.numeric(input$ba2))
+tpa3_g<-eventReactive(input$calc,as.numeric(input$tpa3_g))
+ba3<-eventReactive(input$calc,as.numeric(input$ba3))
+tpa4_g<-eventReactive(input$calc,as.numeric(input$tpa4_g))
+ba4<-eventReactive(input$calc,as.numeric(input$ba4))
+tpa5_g<-eventReactive(input$calc,as.numeric(input$tpa5_g))
+ba5<-eventReactive(input$calc,as.numeric(input$ba5))
+tpa6_g<-eventReactive(input$calc,as.numeric(input$tpa6_g))
+ba6<-eventReactive(input$calc,as.numeric(input$ba6))
+tpa7_g<-eventReactive(input$calc,as.numeric(input$tpa7_g))
+ba7<-eventReactive(input$calc,as.numeric(input$ba7))
+tpa8_g<-eventReactive(input$calc,as.numeric(input$tpa8_g))
+ba8<-eventReactive(input$calc,as.numeric(input$ba8))
 
   
 
 t1<-function(){
 
 
-    
+  if (input$type==1){    
   tpa_comb<-c(tpa1(),tpa2(),tpa3(),tpa4(),tpa5(),tpa6(),tpa7(),tpa8())
   qmd_comb<-c(qmd1(),qmd2(),qmd3(),qmd4(),qmd5(),qmd6(),qmd7(),qmd8())
-
+  }else{
+  tpa_comb<-c(tpa1_g(),tpa2_g(),tpa3_g(),tpa4_g(),tpa5_g(),tpa6_g(),tpa7_g(),tpa8_g())
+  ba_comb<-c(ba1(),ba2(),ba3(),ba4(),ba5(),ba6(),ba7(),ba8())
+  qmd_comb<-sqrt(tpa_comb/ba_comb/0.005454) 
+  
+}
   #remove NAs
   tpa_comb<-tpa_comb[!is.na(tpa_comb)]
   qmd_comb<-qmd_comb[!is.na(qmd_comb)]
 
-  
-  if (input$ineq==1&!as.logical(input$use.metric)){
-    
 
-    tpa.ac<-NULL
-    qmd.in<-NULL
-    ba.ft2ac<-NULL
-    volume.ft3ac<-NULL
-    vol.95CI<-NULL
-    height.ft<-NULL
-    ht.95CI<-NULL
-    biomass.Tonsac<-NULL
-    bio.95CI<-NULL
-    ccpct<-NULL
-    cc.95CI<-NULL
-    
-
-    for (i in 1:length(tpa_comb)){
-      tpa.ac<-c(tpa.ac, tpa_comb[i])
-      qmd.in<-c(qmd.in, qmd_comb[i])
-      ba.ft2ac<-c(ba.ft2ac, round(tpa_comb[i]*qmd_comb[i]*qmd_comb[i]*pi/456,2))
-      
-      volume.ft3ac<-c(volume.ft3ac, round(vol.fun(tpa_comb[i],qmd_comb[i])*1000,2))
-      vol.95CI<-c(vol.95CI, paste("[",paste(c(
-          round((vol.fun(tpa_comb[i],qmd_comb[i])-VOL.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881))*1000,2),
-          round((vol.fun(tpa_comb[i],qmd_comb[i])+VOL.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881))*1000,2)),
-          collapse=" "),"]"))
-      
-      height.ft<-c(height.ft, round(ht.fun(tpa_comb[i],qmd_comb[i]),1))
-      ht.95CI<-c(ht.95CI, paste("[",paste(c(
-        round(ht.fun(tpa_comb[i],qmd_comb[i])-HT.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 911),2),
-        round(ht.fun(tpa_comb[i],qmd_comb[i])+HT.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 911),2)),
-        collapse=" "),"]"))
-      
-      biomass.Tonsac<-c(biomass.Tonsac, round(bio.fun(tpa_comb[i],qmd_comb[i]),2))
-      bio.95CI<-c(bio.95CI, paste("[",paste(c(
-        round(bio.fun(tpa_comb[i],qmd_comb[i])-BIO.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881),2),
-        round(bio.fun(tpa_comb[i],qmd_comb[i])+BIO.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881),2)),
-        collapse=" "),"]"))
-      
-      ccpct<-c(ccpct, round(cc.fun(tpa_comb[i],qmd_comb[i]),1))
-      cc.95CI<-c(cc.95CI, paste("[",paste(c(
-        round(cc.fun(tpa_comb[i],qmd_comb[i])-CC.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881),2),
-        round(cc.fun(tpa_comb[i],qmd_comb[i])+CC.SE_delta(tpa_comb[i],qmd_comb[i])*qt(0.975, 881),2)),
-        collapse=" "),"]"))  
-
-    }
-
-    t_out<-as.data.frame( cbind(tpa.ac,qmd.in, ba.ft2ac, volume.ft3ac, vol.95CI,
-                                   height.ft, ht.95CI, biomass.Tonsac, bio.95CI, ccpct, cc.95CI))
-    colnames(t_out)<-c("tpa.ac","qmd.in", "ba.ft2ac", "volume.ft3ac", "vol.95CI",
-                         "height.ft", "ht.95CI", "biomass.Tonsac", "bio.95CI", "ccpct", "cc.95CI")
-    
-     
-    
-                    
-  } else if (input$ineq==1&as.logical(input$use.metric)){  
-    
-    # convert to english for calculation and after then revert to metric 
-    
-    tph_e<-round(tpa_comb/2.471052,0)
-    qmd_e<-round(qmd_comb/2.54,1)
-    
-    
-    tph.ha<-NULL
-    qmd.cm<-NULL
-    ba.m2ha<-NULL
-    volume.m3ha<-NULL
-    vol.95CI<-NULL
-    height.m<-NULL
-    ht.95CI<-NULL
-    biomass.Mgha<-NULL
-    bio.95CI<-NULL
-    ccpct<-NULL
-    cc.95CI<-NULL
-    
-    
-    for (i in 1:length(tpa_comb)){
-      tph.ha<-c(tph.ha, tpa_comb[i]) # print as it is (English)
-      qmd.cm<-c(qmd.cm, qmd_comb[i]) # print as it is (English)
-      ba.m2ha<-c(ba.m2ha, round(tpa_comb[i]*qmd_comb[i]*qmd_comb[i]*pi/40000,2)) # calculated metric input directly
-      
-      volume.m3ha<-c(volume.m3ha, round(vol.fun(tph_e[i],qmd_e[i])*1000*0.0283168*2.471052,2))
-      vol.95CI<-c(vol.95CI, paste("[",paste(c(
-        round((vol.fun(tph_e[i],qmd_e[i])-VOL.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881))*1000*0.0283168*2.471052,2),
-        round((vol.fun(tph_e[i],qmd_e[i])+VOL.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881))*1000*0.0283168*2.471052,2)),
-        collapse=" "),"]"))
-      
-      height.m<-c(height.m, round(ht.fun(tph_e[i],qmd_e[i])*0.3048,1))
-      ht.95CI<-c(ht.95CI, paste("[",paste(c(
-        round((ht.fun(tph_e[i],qmd_e[i])-HT.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 911))*0.3048,2),
-        round((ht.fun(tph_e[i],qmd_e[i])+HT.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 911))*0.3048,2)),
-        collapse=" "),"]"))
-      
-      biomass.Mgha<-c(biomass.Mgha, round(bio.fun(tph_e[i],qmd_e[i])*0.907185*2.471052,2))
-      bio.95CI<-c(bio.95CI, paste("[",paste(c(
-        round((bio.fun(tph_e[i],qmd_e[i])-BIO.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881))*0.907185*2.471052,2),
-        round((bio.fun(tph_e[i],qmd_e[i])+BIO.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881))*0.907185*2.471052,2)),
-        collapse=" "),"]"))
-      
-      ccpct<-c(ccpct, round(cc.fun(tph_e[i],qmd_e[i]),1)) 
-      cc.95CI<-c(cc.95CI, paste("[",paste(c(
-        round(cc.fun(tph_e[i],qmd_e[i])-CC.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881),2),
-        round(cc.fun(tph_e[i],qmd_e[i])+CC.SE_delta(tph_e[i],qmd_e[i])*qt(0.975, 881),2)),
-        collapse=" "),"]"))  
-      
-    }
-    
-    t_out<-as.data.frame( cbind(tph.ha,qmd.cm, ba.m2ha, volume.m3ha, vol.95CI,
-                                height.m, ht.95CI, biomass.Mgha, bio.95CI, ccpct, cc.95CI))
-    colnames(t_out)<-c("tpa.ha","qmd.cm", "ba.m2ha", "volume.m3ha", "vol.95CI",
-                       "height.m", "ht.95CI", "biomass.Mgha", "bio.95CI", "ccpct", "cc.95CI")
-    
-    
-    
-  } else {
     t_out<-dmd.volume(ineq=as.numeric(input$ineq),
                       tpa=tpa_comb[1],
                       qmd=qmd_comb[1],
@@ -202,9 +135,10 @@ t1<-function(){
                                      use.metric   = as.logical(input$use.metric)))
     }
     }
-}
+
 #t_out<-round(t_out,1) #round numbers to 1 decimal place -> this caused error, suppressed for now.
 t_out
+
 }
 
 output$dmdview <- renderPlot({
