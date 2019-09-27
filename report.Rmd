@@ -59,10 +59,12 @@ MGT_ZONE <-paste(if (as.numeric(input$ineq==1)) input$mgt.zone1 else if (input$i
 ## Estimated Stand Attributes
 
 ```{r, echo=FALSE,warning=FALSE}
-options(warn=-1)      # suppress warnings
+import_library = function(lib_name){
+    suppressWarnings(suppressMessages(require(lib_name, character.only = TRUE)))
+}
+import_library('pander')   # suppress warnings
 #library(knitr)
 #library(kableExtra)
-library(pander)
 #kable(TABLE_OUT,warning=FALSE)
 panderOptions('table.continues', '')
 pander(TABLE_OUT, split.table = 100, round=1, style = 'rmarkdown')
