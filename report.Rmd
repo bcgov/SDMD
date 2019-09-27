@@ -8,6 +8,7 @@
 ## Stand Description
 
 ```{r, echo=FALSE}
+options(warn=-1)      # suppress warnings
 TABLE_OUT <- t1()
 SP_REF<-switch(as.numeric(input$ineq), "User Defined", 
                               "Ponderosa pine:	Long and Shaw (2005)",
