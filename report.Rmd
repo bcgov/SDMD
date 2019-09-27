@@ -8,7 +8,7 @@
 ## Stand Description
 
 ```{r, echo=FALSE}
-options(warn=-1)      # suppress warnings
+
 TABLE_OUT <- t1()
 SP_REF<-switch(as.numeric(input$ineq), "User Defined", 
                               "Ponderosa pine:	Long and Shaw (2005)",
@@ -59,6 +59,7 @@ MGT_ZONE <-paste(if (as.numeric(input$ineq==1)) input$mgt.zone1 else if (input$i
 ## Estimated Stand Attributes
 
 ```{r, echo=FALSE,warning=FALSE}
+options(warn=-1)      # suppress warnings
 #library(knitr)
 #library(kableExtra)
 library(pander)
