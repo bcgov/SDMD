@@ -59,10 +59,7 @@ MGT_ZONE <-paste(if (as.numeric(input$ineq==1)) input$mgt.zone1 else if (input$i
 ## Estimated Stand Attributes
 
 ```{r, echo=FALSE,warning=FALSE}
-import_library = function(lib_name){
-    suppressWarnings(suppressMessages(require(lib_name, character.only = TRUE)))
-}
-import_library('pander')   # suppress warnings
+suppressWarnings(suppressMessages(library("pander")))   # suppress warnings
 #library(knitr)
 #library(kableExtra)
 #kable(TABLE_OUT,warning=FALSE)
