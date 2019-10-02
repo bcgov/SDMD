@@ -90,7 +90,12 @@ navbarPage("Stand Density Management Diagram",
       )),
 
         
-  column(3, conditionalPanel(
+  column(3, wellPanel(
+      selectInput(inputId="drord",label="Point Entering Order",
+                  choices = c("Forward" =1, 
+                              "Backward" =2),
+                  selected = 1)),
+         conditionalPanel(
           condition = "input.type == 1",
           splitLayout(
             numericInput("tpa1", "TPA/TPH", NULL),

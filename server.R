@@ -9,11 +9,37 @@ function(input, output) {
 
 # function for drawing SDMD and segmented lines  
 p1<-function(){
-  x_cord<-c(input$tpa1,input$tpa2,input$tpa3,input$tpa4,input$tpa5,input$tpa6,input$tpa7,input$tpa8)
-  y_cord<-c(input$qmd1,input$qmd2,input$qmd3,input$qmd4,input$qmd5,input$qmd6,input$qmd7,input$qmd8)
-  x_cord_g<-c(input$tpa1_g,input$tpa2_g,input$tpa3_g,input$tpa4_g,input$tpa5_g,input$tpa6_g,input$tpa7_g,input$tpa8_g)
-  y_cord_g<-c(input$ba1,input$ba2,input$ba3,input$ba4,input$ba5,input$ba6,input$ba7,input$ba8)
-  s <- 1:7
+    x_cord<-rep(NA,9)
+    y_cord<-rep(NA,9)
+    pch_index<-rep(NA,9)
+    
+    x_temp<-c(input$tpa1,input$tpa2,input$tpa3,input$tpa4,input$tpa5,input$tpa6,input$tpa7,input$tpa8)
+    y_temp<-c(input$qmd1,input$qmd2,input$qmd3,input$qmd4,input$qmd5,input$qmd6,input$qmd7,input$qmd8)
+    x_temp_g<-c(input$tpa1_g,input$tpa2_g,input$tpa3_g,input$tpa4_g,input$tpa5_g,input$tpa6_g,input$tpa7_g,input$tpa8_g)
+    y_temp_g<-c(input$ba1,input$ba2,input$ba3,input$ba4,input$ba5,input$ba6,input$ba7,input$ba8)
+  
+    if (input$drord==1&input$type==1) {
+        x_cord<-c(x_temp[1],x_temp)
+        y_cord<-c(1,y_temp)
+        pch_index<-c(NA,rep(19,8))
+    } else if (input$drord==2&input$type==1&sum(!is.na(x_temp))>0) {
+        na.id<-length(x_temp[!is.na(x_temp)])
+        x_cord<-c(rep(x_temp[na.id],9-na.id),x_temp[na.id:1])
+        y_cord<-c(rep(1,9-na.id),y_temp[na.id:1])
+        pch_index<-c(rep(NA,9-na.id),rep(19,na.id))
+    } else  if (input$drord==1&input$type==2) {
+        x_cord<-c(x_temp_g[1],x_temp_g)
+        y_cord<-c(1,y_temp_g)
+        pch_index<-c(NA,rep(19,8))
+    } else if (input$drord==2&input$type==2&sum(!is.na(x_temp_g))>0) {
+        na.id<-length(x_temp_g[!is.na(x_temp_g)])
+        x_cord<-c(rep(x_temp_g[na.id],9-na.id),x_temp_g[na.id:1])
+        y_cord<-c(rep(1,9-na.id),y_temp_g[na.id:1])
+        pch_index<-c(rep(NA,9-na.id),rep(19,na.id))
+    }
+    
+    
+  s <- 1:8
   if (input$type==1){
   dmd.view(ineq         = input$ineq,
                           inul         = TRUE,
@@ -56,13 +82,10 @@ p1<-function(){
                         use.metric   = as.logical(input$use.metric))  
     
   }
-  if (input$type==1){ 
-    points(x_cord,y_cord,pch=19,cex=1.3)
+
+    points(x_cord,y_cord,pch=pch_index,cex=1.3)
     segments(x_cord[s],y_cord[s], x_cord[s+1], y_cord[s+1], lwd=1.3)
-  } else {
-    points(x_cord_g,y_cord_g,pch=19,cex=1.3)
-    segments(x_cord_g[s],y_cord_g[s], x_cord_g[s+1], y_cord_g[s+1], lwd=1.3)   
-  }
+
 }
 
 tpa1<-eventReactive(input$calc,as.numeric(input$tpa1))
