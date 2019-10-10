@@ -20,12 +20,12 @@ p1<-function(){
   
     if (input$drord==1&input$type==1) {
         x_cord<-c(x_temp[1],x_temp)
-        y_cord<-c(1,y_temp)
+        y_cord<-c(ifelse(as.logical(input$use.metric),3,1),y_temp)
         pch_index<-c(NA,rep(19,8))
     } else if (input$drord==2&input$type==1&sum(!is.na(x_temp))>0) {
         na.id<-length(x_temp[!is.na(x_temp)])
         x_cord<-c(rep(x_temp[na.id],9-na.id),x_temp[na.id:1])
-        y_cord<-c(rep(1,9-na.id),y_temp[na.id:1])
+        y_cord<-c(rep(ifelse(as.logical(input$use.metric),3,1),9-na.id),y_temp[na.id:1])
         pch_index<-c(rep(NA,9-na.id),rep(19,na.id))
     } else  if (input$drord==1&input$type==2) {
         x_cord<-c(x_temp_g[1],x_temp_g)
