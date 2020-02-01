@@ -1,6 +1,8 @@
 ### This is ui.R
 
 library(shiny)
+library(DT)
+
 
 navbarPage("Stand Density Management Diagram",
 
@@ -151,12 +153,12 @@ navbarPage("Stand Density Management Diagram",
 
   
         conditionalPanel(
-          condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+          condition = "input.ineq == 3",
           helpText("Predict stand attributes. Click the Calculate button to update"),
           actionButton("calc", "Calculate")),
         
         conditionalPanel(
-          condition = "(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
+          condition = "!(input.ineq == 3)",
           helpText("Stand attribute prediction is not available"))
     ),
   
@@ -170,9 +172,10 @@ navbarPage("Stand Density Management Diagram",
   ),
   
   fluidRow(
-      column(12, conditionalPanel(
-      condition = "!(input.ineq == 1|input.ineq == 4|input.ineq == 5|input.ineq == 8)",
-      verbatimTextOutput("Est_vol")
+      column(6, conditionalPanel(
+      condition = "input.ineq == 3",
+      h4("Stand Summary"),
+      DTOutput("Est_vol")
       
   )
   
@@ -213,7 +216,7 @@ navbarPage("Stand Density Management Diagram",
  tabPanel("About",
           fluidRow(
               column(9,
-                     includeMarkdown("about.md")
+                     includeMarkdown("README.md")
               )      
           
           )

@@ -17,6 +17,6 @@ Users can draw different SDMDs by reference as well as create their own (i.e., U
 * Bianca Eskelson, University of British Columbia
 * Martin Ritchie, US Forest Service
 * Jianwei Zhang, US Forest Service
-* Foresters like you!
+
 
 
