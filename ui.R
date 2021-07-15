@@ -4,7 +4,9 @@ library(shiny)
 library(DT)
 
 
-navbarPage("Stand Density Management Diagram",
+navbarPage("Stand Density Management Diagram",id = "SDMD",
+           theme = "bcgov.css",
+           
 
   # Give the title page
  
@@ -22,7 +24,7 @@ navbarPage("Stand Density Management Diagram",
         selectInput(inputId="ineq",label="Select species and reference",
              choices = c("User Defined" =1, 
                          "ponderosa pine:	Long and Shaw (2005)" =2,
-                         "ponderosa pine:	Ritchie and Zhang (In Press)" = 3,
+                         "ponderosa pine:	Jang et al. (2021)" = 3,
                          "ponderosa pine:	Edminster (1988)" = 4,
                          "ponderosa pine:	Cochran and Barrett (1992)" = 5,
                          "California mixed-conifer:	Long and Shaw (2012)" =6,
@@ -93,11 +95,19 @@ navbarPage("Stand Density Management Diagram",
 
         
   column(3, wellPanel(
+      h3("Density Management Regime"),
       selectInput(inputId="drord",label="Point Entering Order",
                   choices = c("Forward" =1, 
                               "Backward" =2),
                   selected = 1)),
-         conditionalPanel(
+      conditionalPanel(
+        condition = "input.type == 1",
+        helpText("TPA/TPH: trees per acre/ha, QMD: inch/cm (English/metric)")),
+      conditionalPanel(
+        condition = "input.type == 2",
+        helpText("TPA/TPH: trees per acre/ha, Basal Area: ft2 per acre/m2 per ha (English/metric)")),
+
+      conditionalPanel(
           condition = "input.type == 1",
           splitLayout(
             numericInput("tpa1", "TPA/TPH", NULL),
@@ -154,12 +164,12 @@ navbarPage("Stand Density Management Diagram",
   
         conditionalPanel(
           condition = "input.ineq == 3",
-          helpText("Predict stand attributes. Click the Calculate button to update"),
+          helpText("Predict stand attributes. Click the Calculate button to update."),
           actionButton("calc", "Calculate")),
         
         conditionalPanel(
           condition = "!(input.ineq == 3)",
-          helpText("Stand attribute prediction is not available"))
+          helpText("Stand attribute prediction is not available."))
     ),
   
   
@@ -173,7 +183,7 @@ navbarPage("Stand Density Management Diagram",
   
   fluidRow(
       column(6, conditionalPanel(
-      condition = "input.ineq == 3",
+      condition = "(input.ineq == 3 & input.tpa1>0)",
       h4("Stand Summary"),
       DTOutput("Est_vol")
       
@@ -186,7 +196,7 @@ navbarPage("Stand Density Management Diagram",
             
         column(6, mainPanel(      
             h4("Export Outputs"),
-            helpText("Note: In order to export, SDMD Plot and/or stand attribute table should be created in advance."),
+            helpText("Note: For download, please make sure that your SDMD Plot and/or stand attribute table were created from the Plot panel."),
             hr(),
             h5("Export SDMD plot"),
             radioButtons("IMGformat", "Image format", c("PDF", "PNG","TIFF"),
@@ -215,11 +225,28 @@ navbarPage("Stand Density Management Diagram",
  
  tabPanel("About",
           fluidRow(
-              column(9,
-                     includeMarkdown("README.md")
+            column(6, offset = 0, style='position:relative; left:10%',
+                   includeMarkdown("README.md")
               )      
           
           )
+ ),
+ 
+ column(width = 12,
+        style = "background-color:#003366; border-top:2px solid #fcba19;",
+        
+        tags$footer(class="footer",
+                    tags$div(class="container", style="display:flex; justify-content:center; flex-direction:column; text-align:center; height:46px;",
+                             tags$ul(style="display:flex; flex-direction:row; flex-wrap:wrap; margin:0; list-style:none; align-items:center; height:100%;",
+                                     tags$li(a(href="https://www2.gov.bc.ca/gov/content/home", "Home", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;")),
+                                     tags$li(a(href="https://www2.gov.bc.ca/gov/content/home/disclaimer", "Disclaimer", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;")),
+                                     tags$li(a(href="https://www2.gov.bc.ca/gov/content/home/privacy", "Privacy", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;")),
+                                     tags$li(a(href="https://www2.gov.bc.ca/gov/content/home/accessibility", "Accessibility", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;")),
+                                     tags$li(a(href="https://www2.gov.bc.ca/gov/content/home/copyright", "Copyright", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;")),
+                                     tags$li(a(href="https://www2.gov.bc.ca/StaticWebResources/static/gov3/html/contact-us.html", "Contact", style="font-size:1em; font-weight:normal; color:white; padding-left:5px; padding-right:5px; border-right:1px solid #4b5e7e;"))
+                             )
+                    )
+        )
  )
 )
 

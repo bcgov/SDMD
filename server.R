@@ -171,9 +171,8 @@ output$dmdview <- renderPlot({
 
   
 output$Est_vol<-renderDT({
-  
-  SDMD.header = htmltools::withTags(table(
-    class = 'display', 
+if(input$use.metric==FALSE){
+  SDMD.header = htmltools::withTags(table(class = 'display', 
     thead(
       tr(
         th(rowspan = 2, "TPA", style = "text-align: center"),
@@ -199,9 +198,41 @@ output$Est_vol<-renderDT({
               style = 'caption-side: bottom; text-align: left;',
               htmltools::tags$p('Note: ', htmltools::em('TPA = trees per acre, QMD = quadratic mean diameter (inch), BA = basal area (square feet per acre), SE = standard error.'))
             )          
-  )    
-  })
 
+            )
+}
+else {
+  SDMD.header = htmltools::withTags(table(
+    class = 'display', 
+    thead(
+      tr(
+        th(rowspan = 2, "TPH", style = "text-align: center"),
+        th(rowspan = 2, "QMD", style = "text-align: center"),
+        th(rowspan = 2, "BA", style = "text-align: center"),
+        th(colspan = 2, "Volume (cubic m per ha)", style = "text-align: center"),
+        th(colspan = 2, "Top Height (m)", style = "text-align: center"),
+        th(colspan = 2, "Biomass (Tons per ha)", style = "text-align: center"),
+        th(colspan = 2, "Canopy Cover (%)", style = "text-align: center")
+      ),
+      tr(
+        lapply(rep(c("Estimates", "SE"),4), th)
+      )  
+    )
+  )
+  )
+  
+  datatable(t1(),
+            container =  SDMD.header , rownames = FALSE, 
+            options = list(paging = FALSE, ordering=F, sDom  = '<"top">rt<"bottom">',
+                           columnDefs=list(list(targets= '_all', class="dt-center"))),
+            caption = htmltools::tags$caption(
+              style = 'caption-side: bottom; text-align: left;',
+              htmltools::tags$p('Note: ', htmltools::em('TPH = trees per ha, QMD = quadratic mean diameter (cm), BA = basal area (square m per ha), SE = standard error.'))
+            )          
+  )    
+}
+}  
+)
 
 output$SDMD_out = downloadHandler(
   filename = function() {
