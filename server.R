@@ -1,8 +1,10 @@
 library(shiny)
-library(standview)
+#library(standview)
 library(rmarkdown)
 library(openxlsx)
 library(DT)
+source("standview.R")
+
 
 function(input, output) {
   
