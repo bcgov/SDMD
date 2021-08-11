@@ -3,7 +3,6 @@
 
 * Date/time: `r Sys.time()`
 
-#### *Caution!* Please note that this report was made through the proto-version of SDMD App., so the numbers and figure might contain errors.
 
 ## Stand Description
 

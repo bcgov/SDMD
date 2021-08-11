@@ -47,18 +47,13 @@ navbarPage("Stand Density Management Diagram",id = "SDMD",
         conditionalPanel(
           condition = "input.ineq==6",
           numericInput("max.sdi6", "Maximum SDI", NA),
+          helpText("Provide maximum SDI for Rendering"),
           sliderInput("mgt.zone6", "Management Zone",
                     min = 0, max = 1,
-                    value = c(0.35,0.60)),
-          helpText("Provide maximum SDI for Rendering")),
+                    value = c(0.35,0.60))
+          ),
                
-        conditionalPanel(
-          condition = "input.ineq==7",
-          hr(),
-          numericInput("max.sdi7", "Maximum SDI", NA),
-          helpText("Note: Maximum SDI is used for stand attribute calculation only.")),
-      
-        conditionalPanel(
+       conditionalPanel(
           condition = "input.ineq==1",
           helpText("Note: All information should be filled to render the diagram."),
           numericInput("max.sdi1", "Maximum SDI", NA),
@@ -173,9 +168,9 @@ navbarPage("Stand Density Management Diagram",id = "SDMD",
     ),
   
   
-  column(6, mainPanel(
-        plotOutput("dmdview", height="800px")
-    ))
+  column(6, 
+         uiOutput("dmdview")
+    )
 
 
   

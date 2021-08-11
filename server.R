@@ -49,8 +49,7 @@ p1<-function(){
                           inply        = TRUE,
                           insdr        = FALSE,
                           insdl        = TRUE,
-                          max.sdi      = ifelse(input$ineq==1,input$max.sdi1,ifelse(input$ineq==6,input$max.sdi6,
-                                                                                    ifelse(input$ineq==7,input$max.sdi7,NA))),
+                          max.sdi      = ifelse(input$ineq==1,input$max.sdi1,ifelse(input$ineq==6,input$max.sdi6,NA)),
                           dmd.title    = ifelse(input$ineq==1,input$title1," "),
                           sdi.lines    = input$sdi.lines,
                           mgt.zone     = if (input$ineq==1) input$mgt.zone1 else if (input$ineq==6) input$mgt.zone6 else NA,
@@ -166,10 +165,16 @@ t_out
 
 }
 
-output$dmdview <- renderPlot({
-   par(mar=c(5.1,.5,4.1,2.1)) 
+output$dmdview <- renderUI({
+  
+  output$plot_temp <- renderPlot({
+    par(mar=c(5.1,.5,4.1,2.1)) 
     p1()
        })
+  plotOutput("plot_temp", height="900px", width = ifelse(input$type==1,"70%", "100%"))
+  
+})
+
 
   
 output$Est_vol<-renderDT({
