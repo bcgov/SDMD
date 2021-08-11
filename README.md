@@ -1,3 +1,4 @@
+[![Lifecycle:Stable](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](<Redirect-URL>)
 # Stand Density Management Diagram
 
 This application depicts stand density management diagrams (SDMDs) of ponderosa pine as well as some other North American conifer stands via `R`'s `Shiny` app. This application was designed to accomodate the `standview` package, written by M.W. Ritchie from US Forest Service. Detail for the `standview` package is available at: [https://www.fs.fed.us/psw/tools/standview/](https://www.fs.fed.us/psw/tools/standview/) and [https://github.com/mwritchie](https://github.com/mwritchie).
